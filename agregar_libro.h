@@ -4,7 +4,7 @@
 #include <windows.h>
 #include "conexion.h"
 
-void agregarLibro(PGconn* conn, const char* titulo, const char* autor, const char* isbn, const char* editorial, const char* anio, const char* area,const char* disponibilidad);
+void agregarLibro(PGconn* conn, const char* titulo, const char* autor, const char* isbn, const char* editorial, const char* anio, const char* area);
 void AbrirVentanaAgregarLibro(HWND hwndPadre);
 
 #endif // AGREGAR_LIBRO_H

@@ -7,6 +7,9 @@
 
 // Variable global para el usuario
 extern std::string usuarioActual;
+extern int idUsuarioActual;
+
+
 
 // Declarar MenuProcedure2
 LRESULT CALLBACK MenuProcedure2(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);

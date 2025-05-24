@@ -90,7 +90,7 @@ void BuscarLibroPorTitulo(HWND hwndListView, const string& titulo) {
             datos[j] = val ? val : "";
         }
 
-        datos[6] = (datos[6] == "1") ? "Sí" : "No";
+        datos[6] = (datos[6] == "1") ? "Si" : "No";
 
         LVITEM item = {};
         item.mask = LVIF_TEXT;
@@ -150,6 +150,8 @@ LRESULT CALLBACK WindowProcedureBuscarLibro(HWND hwnd, UINT msg, WPARAM wp, LPAR
             col.iSubItem = i;
             ListView_InsertColumn(hwndListView, i, &col);
         }
+
+        BuscarLibroPorTitulo(hwndListView, "");
 
         break;
     }

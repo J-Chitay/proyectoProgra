@@ -1,5 +1,6 @@
 #include "menu2.h"
 #include "prestar_libro.h"
+#include "devolver_libro.h"
 #include "conexion.h"
 #include "buscar_libro.h"
 #include <windows.h>
@@ -67,6 +68,10 @@ LRESULT CALLBACK MenuProcedure2(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             AbrirVentanaPrestarLibro(conexionGlobal, usuarioActual);
             return 0;
         }
+        if (LOWORD(wp) == 6) {
+            AbrirVentanaDevolverLibro(conexionGlobal);
+            return 0;
+        }
         return 0;
     }
     return DefWindowProc(hwnd, msg, wp, lp);
@@ -117,6 +122,11 @@ void AbrirVentanaMenu2(PGconn* conn, const std::string& usuario, int idUsuario)
 
     SetWindowLong(hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX & ~WS_SYSMENU);
 
+HWND hBotonDevolver = CreateWindow(
+    "BUTTON", "Devolver Libro",
+    WS_VISIBLE | WS_CHILD,
+    50, 50, 150, 30,  // Cambié posición para prueba
+    hwnd, (HMENU)6, NULL, NULL);
     CreateWindow("BUTTON", "Prestar Libro", WS_VISIBLE | WS_CHILD, 150, 100, 150, 30, hwnd, (HMENU)5, NULL, NULL);
     CreateWindow("BUTTON", "Buscar Libro", WS_VISIBLE | WS_CHILD, 150, 150, 150, 30, hwnd, (HMENU)4, NULL, NULL);
     CreateWindow("BUTTON", "Cerrar", WS_VISIBLE | WS_CHILD, 200, 200, 100, 30, hwnd, (HMENU)3, NULL, NULL);

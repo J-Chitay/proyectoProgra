@@ -43,9 +43,16 @@ void GuardarPrestamo(PGconn* conn, int isbn, int idUsuario) {
     }
 
     // Obtener título y disponibilidad
-    char* titulo = PQgetvalue(res, 0, 0);
+    std::string tituloStr = PQgetvalue(res, 0, 0);
     char* disp_str = PQgetvalue(res, 0, 1);
     int disponibilidad = atoi(disp_str);
+
+    // Escapar comillas simples del título
+    size_t pos = 0;
+    while ((pos = tituloStr.find("'", pos)) != std::string::npos) {
+        tituloStr.replace(pos, 1, "''");
+        pos += 2;
+    }
 
     if (disponibilidad == 0) {
         // Libro ya está prestado
@@ -80,7 +87,8 @@ void GuardarPrestamo(PGconn* conn, int isbn, int idUsuario) {
     // Insertar préstamo
     std::stringstream insertar;
     insertar << "INSERT INTO prestamos (isbn, titulo, id_usuario, fecha_prestamo) VALUES ("
-             << isbn << ", '" << titulo << "', " << idUsuario << ", '" << fechaHora << "');";
+         << isbn << ", '" << tituloStr << "', " << idUsuario << ", '" << fechaHora << "');";
+
 
     PGresult* res3 = PQexec(conn, insertar.str().c_str());
 
@@ -167,17 +175,13 @@ void AbrirVentanaPrestarLibro(PGconn* conn, const std::string& usuario) {
 
     CentrarVentana(hwndPrestarLibro);
 
-    CreateWindow("STATIC", "ID del Libro:", WS_VISIBLE | WS_CHILD,
-                 50, 40, 100, 20, hwndPrestarLibro, NULL, NULL, NULL);
+    CreateWindow("STATIC", "ID del Libro:", WS_VISIBLE | WS_CHILD, 50, 40, 100, 20, hwndPrestarLibro, NULL, NULL, NULL);
 
-    txtIdLibro = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER,
-                              160, 40, 150, 20, hwndPrestarLibro, NULL, NULL, NULL);
+    txtIdLibro = CreateWindow("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER, 160, 40, 150, 20, hwndPrestarLibro, NULL, NULL, NULL);
 
-    btnPrestar = CreateWindow("BUTTON", "Prestar", WS_VISIBLE | WS_CHILD,
-                              150, 80, 100, 30, hwndPrestarLibro, (HMENU)1, NULL, NULL);
+    btnPrestar = CreateWindow("BUTTON", "Prestar", WS_VISIBLE | WS_CHILD, 150, 80, 100, 30, hwndPrestarLibro, (HMENU)1, NULL, NULL);
 
-    HWND btnCerrar = CreateWindow("BUTTON", "Cerrar", WS_VISIBLE | WS_CHILD,
-                                 150, 120, 100, 30, hwndPrestarLibro, (HMENU)2, NULL, NULL);
+    HWND btnCerrar = CreateWindow("BUTTON", "Cerrar", WS_VISIBLE | WS_CHILD, 150, 120, 100, 30, hwndPrestarLibro, (HMENU)2, NULL, NULL);
 
     ShowWindow(hwndPrestarLibro, SW_SHOW);
     UpdateWindow(hwndPrestarLibro);

@@ -1,0 +1,1 @@
+g++ login.cpp conexion.cpp agregar_libro.cpp menu.cpp menu2.cpp buscar_libro.cpp ver_libros.cpp prestar_libro.cpp devolver_libro.cpp -o login.exe -I"C:\Program Files\PostgreSQL\15\include" -L"C:\Program Files\PostgreSQL\15\lib" -lpq -lcomctl32 -lgdi32

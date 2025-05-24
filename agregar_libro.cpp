@@ -25,14 +25,14 @@ void limpiarCampos() {
     SetWindowTextA(hDisponibilidad, "");
 }
 
-void agregarLibro(PGconn* conn, const char* titulo, const char* autor, const char* isbn, const char* editorial, const char* anio, const char* area, const char* disponibilidad) {
+void agregarLibro(PGconn* conn, const char* titulo, const char* autor, const char* isbn, const char* editorial, const char* anio, const char* area) {
     if (!conn) {
         MessageBox(NULL, _T("No se pudo conectar a la base de datos."), _T("Error"), MB_ICONERROR);
         return;
     }
 
     if (strlen(titulo) == 0 || strlen(autor) == 0 || strlen(isbn) == 0 ||
-        strlen(editorial) == 0 || strlen(anio) == 0 || strlen(area) == 0 || strlen(disponibilidad) == 0) {
+        strlen(editorial) == 0 || strlen(anio) == 0 || strlen(area) == 0) {
         MessageBox(NULL, _T("campos requeridos favor completar la información"), _T("Campos vacíos"), MB_ICONWARNING);
         return;
     }
@@ -55,6 +55,7 @@ void agregarLibro(PGconn* conn, const char* titulo, const char* autor, const cha
         return;
     }
 
+    const char* disponibilidad = "1";
     const char* paramValues[7] = { titulo, autor, isbn, editorial, anio, area, disponibilidad };
     const char* insertQuery = "INSERT INTO libros (titulo, autor, isbn, editorial, anioPublicacion, areaCientifica, disponibilidad) VALUES ($1, $2, $3, $4, $5, $6, $7)";
     
@@ -103,9 +104,7 @@ LRESULT CALLBACK VentanaAgregarLibroProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
         hArea = CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER, inputX, y, inputW, 20, hwnd, NULL, NULL, NULL);
         y += stepY;
 
-        CreateWindow(_T("STATIC"), _T("Cantidad D.:"), WS_VISIBLE | WS_CHILD, labelX, y, labelW, 20, hwnd, NULL, NULL, NULL);
-        hDisponibilidad = CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER, inputX, y, inputW, 20, hwnd, NULL, NULL, NULL);
-        y += stepY + 10;
+        y += stepY + 10; // Saltar espacio como si existiera el campo
 
         CreateWindow(_T("BUTTON"), _T("Guardar"), WS_VISIBLE | WS_CHILD, inputX, y, 90, 30, hwnd, (HMENU)ID_BTN_GUARDAR, NULL, NULL);
         CreateWindow(_T("BUTTON"), _T("Limpiar"), WS_VISIBLE | WS_CHILD, inputX + 100, y, 90, 30, hwnd, (HMENU)ID_BTN_LIMPIAR, NULL, NULL);
@@ -115,15 +114,14 @@ LRESULT CALLBACK VentanaAgregarLibroProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
     case WM_COMMAND:
         switch (LOWORD(wParam)) {
         case ID_BTN_GUARDAR: {
-            char titulo[255], autor[255], isbn[100], editorial[255], anio[10], area[100], disponibilidad[100];
+            char titulo[255], autor[255], isbn[100], editorial[255], anio[10], area[100];
             GetWindowTextA(hTitulo, titulo, 255);
             GetWindowTextA(hAutor, autor, 255);
             GetWindowTextA(hISBN, isbn, 100);
             GetWindowTextA(hEditorial, editorial, 255);
             GetWindowTextA(hAnio, anio, 10);
             GetWindowTextA(hArea, area, 100);
-            GetWindowTextA(hDisponibilidad, disponibilidad, 100);
-            agregarLibro(connAgregar, titulo, autor, isbn, editorial, anio, area, disponibilidad);
+            agregarLibro(connAgregar, titulo, autor, isbn, editorial, anio, area);
             break;
         }
         case ID_BTN_LIMPIAR:
